@@ -41,7 +41,7 @@ jobs:
       - name: Make cmake build directory
         run: cmake -E make_directory build
 
-      - name: Configure CMake (Unix)
+      - name: Configure, build, and install (Unix)
         if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
         working-directory: ${{ github.workspace }}/build
         run: |
@@ -49,7 +49,9 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
           -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
 
-      - name: Configure CMake (Windows)
+          cmake --build . --target install --config ${{ matrix.build-type }}
+
+      - name: Configure, build, and install (Windows)
         if: matrix.os == 'windows-latest'
         working-directory: ${{ github.workspace }}\build
         shell: pwsh
@@ -60,9 +62,7 @@ jobs:
             -DCMAKE_INSTALL_PREFIX:PATH=$env:CONDA_PREFIX\Library `
             -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
 
-      - name: Build
-        working-directory: ${{ github.workspace }}/build
-        run: cmake --build . --target install --config ${{ matrix.build-type }}
+          cmake --build . --target install --config ${{ matrix.build-type }}
 
       - name: Test (Unix)
         if: matrix.os != 'windows-latest'
